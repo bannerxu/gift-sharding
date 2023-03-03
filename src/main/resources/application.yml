@@ -1,0 +1,47 @@
+## server
+server:
+  port: 8081
+
+
+mybatis-plus:
+  #指定mapper.xml的位置
+  mapper-locations: classpath*:mybatis/*.xml
+  configuration:
+    #开启驼峰命名法转换字段支持,用于对象关系绑定
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # 开启 SQL 解析缓存注解生效
+  global-config:
+    sql-parser-cache: true
+
+## 不分库,分表
+
+spring:
+  shardingsphere:
+    mode:
+      type: Memory
+    datasource:
+      names: master
+      master:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3306/simple_gift?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+        username: root
+        password: 123456
+    rules:
+      sharding:
+        sharding-algorithms:
+          year-month-record-inline:
+            type: CLASS_BASED
+            props:
+              strategy: STANDARD
+              algorithmClassName: top.banner.config.YearMonthShardingAlgorithm
+        tables:
+          gift_send_record:
+            actual-data-nodes: master.gift_send_record,master.gift_send_record_202$->{201..312}  #数据分表
+            table-strategy: # 配置分表策略
+              standard:
+                sharding-column: create_time
+                sharding-algorithm-name: year-month-record-inline
+  redis:
+    host: localhost
