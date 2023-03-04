@@ -2,4 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="top.banner.mapper.GiftSendRecordMapper">
 
+<insert id="insertBatch">
+    insert into gift_send_record (uid, receive_uid, room_id, gift_id, gift_num, total_gold_num, create_time)
+    values
+    <foreach collection="list" item="r" separator=",">
+        (#{r.uid}, #{r.receiveUid}, #{r.roomId}, #{r.giftId}, #{r.giftNum}, #{r.totalGoldNum}, #{r.createTime})
+    </foreach>
+</insert>
 </mapper>

@@ -2,4 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="top.banner.mapper.RoomMapper">
 
+<insert id="installBatch">
+    insert into room (uid, title,room_id,room_pwd,room_desc)
+    values
+    <foreach collection="rooms" item="room" separator=",">
+        (#{room.uid}, #{room.title},#{room.roomId},#{room.roomPwd}, #{room.roomDesc})
+    </foreach>
+</insert>
 </mapper>
