@@ -1,0 +1,45 @@
+<configuration>
+    <property name="LOG_HOME" value="/hawa/logs/java/hawa-api"/>
+    <property name="LOG_HOME" value="logs/${spring.application.name}"/>
+
+    <!--输出到控制台-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="allLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/base.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/%d{yyyy-MM-dd}/base.%i.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 64 MB -->
+                <maxFileSize>128 MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg %n</pattern>
+            <!--            <pattern>%d %p (%logger\) - %m%n</pattern>-->
+            <!-- 此处设置字符集 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <appender name="async_allLog" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>12</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <includeCallerData>false</includeCallerData>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="allLog"/>
+    </appender>
+    <logger name="top.banner" level="INFO">
+        <appender-ref ref="allLog"/>
+    </logger>
+
+
+</configuration>
